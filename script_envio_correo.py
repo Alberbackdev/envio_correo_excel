@@ -15,7 +15,7 @@ server = smtplib.SMTP(host='smtp.gmail.com', port=587)
 server.starttls()
 
 #autenticar/Colocar correo y contraseña
-server.login(user= 'correo@gmail.com', password= 'contraseña')
+server.login(user= 'hugoleo1995@gmail.com', password= 'Isa2021*')
 
 #emisor, receptor y mensaje/declarado en variables o directo en comillas simples
 server.sendmail(emisor, receptor, mensaje)
