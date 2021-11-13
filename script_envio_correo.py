@@ -2,6 +2,7 @@ import requests
 from pandas import json_normalize
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
+from email import encoders
 import smtplib
 
 
@@ -39,11 +40,24 @@ mensaje['From'] = emisor
 mensaje['To'] = receptor
 mensaje['Subject'] = asunto
 
-adjunto = MIMEBase("application","octect-stream")
-adjunto.set_payload(open('report.xlsx',"rb").read())
-adjunto.add_header("content-Disposition",'attachment; filename="report.xlsx"')
-mensaje.attach(adjunto)
-
+with open('report.xlsx','rb') as f:
+         # Aquí adjuntoMIMEY el nombre del archivo, aquí está el tipo xlsx
+    adjunto = MIMEBase('xlsx','xlsx',filename="report.xlsx")
+         # Más información de encabezado necesaria
+    adjunto.add_header('Content-Disposition','attachment',filename="report.xlsx")
+    adjunto.add_header('Content-ID','<0>')
+    adjunto.add_header('X-Attachment-Id','0')
+         #Lea el contenido del archivo adjunto
+    adjunto.set_payload(f.read())
+         # Codificación con Base64
+    encoders.encode_base64(adjunto)
+    mensaje.attach(adjunto)
+""" 
+    adjunto = MIMEBase("application","octect-stream")
+    adjunto.set_payload(open('report.xlsx',"rb").read())
+    adjunto.add_header("content-Disposition",'attachment; filename="report.xlsx"')
+    mensaje.attach(adjunto)
+ """
 
 #conexion server
 server = smtplib.SMTP(host='smtp.gmail.com', port=587)
@@ -53,10 +67,10 @@ server.starttls()
 server.login(user= 'pruebatenable2021@gmail.com', password= 'tenable12345')
 
 # Convertimos el objeto mensaje a texto
-texto = mensaje.as_string().encode('utf-8')
+#texto = mensaje.as_string().encode('utf-8')
 
 #emisor, receptor y mensaje/declarado en variables o directo en comillas simples
-server.sendmail(emisor, receptor, texto)
+server.sendmail(emisor, receptor, mensaje.as_string())
 
 #salir del servidor
 server.quit()
