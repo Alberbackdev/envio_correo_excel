@@ -27,7 +27,7 @@ archivo = data.to_excel('report.xlsx', sheet_name='report1')
 receptor = input('Ingrese correo electronico del receptor: ')
 
 #Correo del emisor
-emisor = 'hugoleo1995@gmail.com'
+emisor = 'pruebatenable2021@gmail.com'
 
 asunto = 'Reporte de vulnerabilidades'
 
@@ -50,7 +50,7 @@ server = smtplib.SMTP(host='smtp.gmail.com', port=587)
 server.starttls()
 
 #autenticar/Colocar correo y contraseña
-server.login(user= 'hugoleo1995@gmail.com', password= 'Isa2021*')
+server.login(user= 'pruebatenable2021@gmail.com', password= 'tenable12345')
 
 # Convertimos el objeto mensaje a texto
 texto = mensaje.as_string().encode('utf-8')
