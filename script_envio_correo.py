@@ -9,7 +9,7 @@ import smtplib
 #API
 url = "https://cloud.tenable.com/workbenches/vulnerabilities"
 
-querystring = {"severity":"critical"}
+querystring = {"authenticated":"true","exploitable":"true","resolvable":"true","severity":"high"}
 
 headers = {
     "Accept": "application/json",
@@ -18,8 +18,13 @@ headers = {
 
 response = requests.request("GET", url, headers=headers, params=querystring)
 
+res = response.json()
+for i in res['vulnerabilities']:
+ url = "https://cloud.tenable.com/workbenches/vulnerabilities/"+str(i['plugin_id'])+"/info"
+ response2 = requests.request("GET", url, headers=headers)
+
 #convierte a json y a su vez a csv
-data = json_normalize(response.json())
+data = json_normalize(response2.json())
 
 archivo = data.to_excel('report.xlsx', sheet_name='report1')
 
