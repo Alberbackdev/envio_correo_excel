@@ -30,9 +30,9 @@ for i in res['vulnerabilities']:
 #convierte a json y a su vez a csv
 data = json_normalize(response2.json())
 
-extraData = pd.DataFrame(data, columns=['count', 'vuln_count', 'description','synopsis','solution','discovery','severity','plugin_details','reference_information','risk_information','see_also', 'vulnerability_information','vpr'])
+extraData = pd.DataFrame(data, columns=['description','synopsis','solution'])
 print(extraData)
-archivo = extraData.to_excel('report.xlsx', sheet_name='report1')
+archivo = extraData.to_excel('report.xlsx', sheet_name='report1') 
 
 #----------------------------Correo---------------------
 

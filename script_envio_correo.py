@@ -22,6 +22,14 @@ res = response.json()
 for i in res['vulnerabilities']:
  url = "https://cloud.tenable.com/workbenches/vulnerabilities/"+str(i['plugin_id'])+"/info"
  response2 = requests.request("GET", url, headers=headers)
+ res2 = response2.json()
+ objeto = res2['info']
+ titulo = objeto.keys()
+ valores = objeto.values()
+ elementos = objeto.items()
+ for titulo, valores in elementos:
+  print(titulo, '-->', valores)
+ #print(json.dumps(objeto, sort_keys=True, indent=4))
 
 #convierte a json y a su vez a csv
 data = json_normalize(response2.json())
