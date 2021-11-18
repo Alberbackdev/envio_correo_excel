@@ -28,21 +28,32 @@ sheet ['B1'] = 'synopsis'
 sheet ['C1'] = 'solution'
 columnas= ['A', 'B', 'C']
 contador=2
+
+
 for i in res['vulnerabilities']:
- url = "https://cloud.tenable.com/workbenches/vulnerabilities/"+str(i['plugin_id'])+"/info"
- response2 = requests.request("GET", url, headers=headers)
- res2 = response2.json()
- objeto = res2['info']
- titulo = objeto.keys()
- valores = objeto.values()
- elementos = objeto.items()
- for titulo, valores in elementos:
+   url = "https://cloud.tenable.com/workbenches/vulnerabilities/"+str(i['plugin_id'])+"/info"
+   response2 = requests.request("GET", url, headers=headers)
+   res2 = response2.json()
+   objeto = res2['info']
+   titulo = objeto.keys()
+   valores = objeto.values()
+   elementos = objeto.items()
+   for titulo, valores in elementos:
     #print(titulo, '-->', valores)
-    if titulo=='description' or titulo=='synopsis' or titulo=='solution':
-        for i2 in columnas:
-         #print(titulo, '-->', valores)
-            sheet[f'{i2}{contador}'] = valores
-        contador=contador+1  
-        print(contador)
+      if titulo=='description':
+         sheet[f'A{contador}'] = valores
+         pass
+
+      elif titulo=='synopsis':
+         sheet[f'B{contador}'] = valores
+         pass
+
+
+      elif titulo=='solution':
+         sheet[f'C{contador}'] = valores
+         pass
+               
+   contador=contador+1  
+   print(contador)
  #print(json.dumps(objeto, sort_keys=True, indent=4))
 book.save('prueba.xlsx')
