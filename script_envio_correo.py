@@ -3,10 +3,11 @@ from pandas import json_normalize
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
+from openpyxl import Workbook
 import smtplib
 
 
-#API
+#API llamada 1
 url = "https://cloud.tenable.com/workbenches/vulnerabilities"
 
 querystring = {"authenticated":"true","exploitable":"true","resolvable":"true","severity":"high"}
@@ -17,8 +18,15 @@ headers = {
 }
 
 response = requests.request("GET", url, headers=headers, params=querystring)
-
+#construcción del excel y segunda llamada a la api para traer los detalles de cada incidencia
 res = response.json()
+book = Workbook()
+sheet = book.active
+sheet ['A1'] = 'description'
+sheet ['B1'] = 'synopsis'
+sheet ['C1'] = 'solution'
+columnas= ['A', 'B', 'C']
+contador=2
 for i in res['vulnerabilities']:
  url = "https://cloud.tenable.com/workbenches/vulnerabilities/"+str(i['plugin_id'])+"/info"
  response2 = requests.request("GET", url, headers=headers)
@@ -28,13 +36,12 @@ for i in res['vulnerabilities']:
  valores = objeto.values()
  elementos = objeto.items()
  for titulo, valores in elementos:
-  print(titulo, '-->', valores)
- #print(json.dumps(objeto, sort_keys=True, indent=4))
-
-#convierte a json y a su vez a csv
-data = json_normalize(response2.json())
-
-archivo = data.to_excel('report.xlsx', sheet_name='report1')
+    if titulo=='description' or titulo=='synopsis' or titulo=='solution':
+        for i2 in columnas:
+            sheet[f'{i2}{contador}'] = valores
+        contador=contador+1  
+        print(contador)
+book.save('prueba.xlsx')
 
 #----------------------------Correo---------------------
 
@@ -53,7 +60,7 @@ mensaje['From'] = emisor
 mensaje['To'] = receptor
 mensaje['Subject'] = asunto
 
-with open('report.xlsx','rb') as f:
+with open('prueba.xlsx','rb') as f:
          # Aquí adjuntoMIMEY el nombre del archivo, aquí está el tipo xlsx
     adjunto = MIMEBase('xlsx','xlsx',filename="report.xlsx")
          # Más información de encabezado necesaria
