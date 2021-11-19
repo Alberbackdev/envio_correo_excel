@@ -36,11 +36,18 @@ for i in res['vulnerabilities']:
  valores = objeto.values()
  elementos = objeto.items()
  for titulo, valores in elementos:
-    if titulo=='description' or titulo=='synopsis' or titulo=='solution':
-        for i2 in columnas:
-            sheet[f'{i2}{contador}'] = valores
-        contador=contador+1  
-        print(contador)
+    if titulo=='description':
+         sheet[f'A{contador}'] = valores
+         pass
+
+    elif titulo=='synopsis':
+         sheet[f'B{contador}'] = valores
+         pass
+
+    elif titulo=='solution':
+         sheet[f'C{contador}'] = valores
+         pass
+
 book.save('prueba.xlsx')
 
 #----------------------------Correo---------------------
