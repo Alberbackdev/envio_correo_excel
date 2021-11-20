@@ -1,10 +1,12 @@
 import requests
+import string
 import json
 from pandas import json_normalize
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 from openpyxl import Workbook
+import csv
 import smtplib
 
 
@@ -19,41 +21,33 @@ headers = {
 }
 
 response = requests.request("GET", url, headers=headers, params=querystring)
-
 res = response.json()
 book = Workbook()
 sheet = book.active
-sheet ['A1'] = 'description'
-sheet ['B1'] = 'synopsis'
-sheet ['C1'] = 'solution'
-columnas= ['A', 'B', 'C']
-contador=2
 
+contador=2
+#letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P']
+letras = list(string.ascii_uppercase)
+#print(letras)
 
 for i in res['vulnerabilities']:
    url = "https://cloud.tenable.com/workbenches/vulnerabilities/"+str(i['plugin_id'])+"/info"
    response2 = requests.request("GET", url, headers=headers)
    res2 = response2.json()
    objeto = res2['info']
-   titulo = objeto.keys()
-   valores = objeto.values()
-   elementos = objeto.items()
-   for titulo, valores in elementos:
-    #print(titulo, '-->', valores)
-      if titulo=='description':
-         sheet[f'A{contador}'] = valores
-         pass
+   #print(json.dumps(objeto, sort_keys=True, indent=4))
+   
+   #crea diccionario con letras del abecedario y categorias
+   columna = dict(zip(letras,objeto.keys()))
+   #crea los titulos de las columnas
+   for col, titulo in columna.items():
+      sheet[f'{col}1'] = titulo
+      pass
+      #Agrega info en las celdas correspondientes
+      for k, v in objeto.items():
+         if titulo == k:
+            sheet[f'{col}{contador}'] = '{}'.format(v)
 
-      elif titulo=='synopsis':
-         sheet[f'B{contador}'] = valores
-         pass
-
-
-      elif titulo=='solution':
-         sheet[f'C{contador}'] = valores
-         pass
-               
    contador=contador+1  
    print(contador)
- #print(json.dumps(objeto, sort_keys=True, indent=4))
 book.save('prueba.xlsx')
