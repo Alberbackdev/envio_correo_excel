@@ -26,9 +26,11 @@ res = response.json()
 book = Workbook()
 sheet = book.active
 contador=2
-#letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P']
-letras = list(string.ascii_uppercase)
+letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T', 'U', 'V', 'W', 'X', 'Y', 'Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ']
+#letras = list(string.ascii_uppercase)
 #print(letras)
+
+#filaa titulos definidos
 for i in res['vulnerabilities']:
    url = "https://cloud.tenable.com/workbenches/vulnerabilities/"+str(i['plugin_id'])+"/info"
    response2 = requests.request("GET", url, headers=headers)
@@ -37,16 +39,35 @@ for i in res['vulnerabilities']:
    #print(json.dumps(objeto, sort_keys=True, indent=4))
 
    #crea diccionario con letras del abecedario y categorias
-   columna = dict(zip(letras,objeto.keys()))
+   columna = dict(zip(letras,objeto.items()))
    #crea los titulos de las columnas
+   i2=0
+   iletras=0
+   
    for col, titulo in columna.items():
-      sheet[f'{col}1'] = titulo
-      pass
+      if i2<=len(titulo[0]):    
+          if type(titulo[1]) == dict :
+               #print('directorio')
+               for title in titulo[1]:
+                    #print(iletras)
+                    #print(title) 
+                    sheet[f'{letras[iletras]}1'] = title  
+                    iletras=iletras+1
+          else:
+               #print('otro')
+               #print(titulo[0]) 
+               #print(iletras)
+               sheet[f'{letras[iletras]}1'] = titulo[0]
+               iletras=iletras+1
+          #print(i2)     
+          i2=i2+1 
       #Agrega info en las celdas correspondientes
-      for k, v in objeto.items():
+      
+
+      """for k, v in objeto.items():
           if titulo == k:
                sheet[f'{col}{contador}'] = '{}'.format(v)
-     
+     """
    contador=contador+1  
 book.save('prueba.xlsx')
 
